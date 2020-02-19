@@ -54,6 +54,35 @@ void replaceSpace(char *str, int length)
 		ptr1--;
 	}
 }
+//按链表从尾到头的顺序打印ArrayList
+struct ListNode 
+{
+	int val;
+	struct ListNode *next;
+	ListNode(int x) 
+		:val(x)
+		,next(NULL) 
+	{}
+};
+#include <stack>
+vector<int> printListFromTailToHead(ListNode* head)
+{
+	vector<int> ArrayList;
+	stack<int> s;
+	ListNode* pCur = head;
+	while (pCur)
+	{
+		s.push(pCur->val);
+		pCur = pCur->next;
+	}
+	int len = s.size();
+	for (int i = 0; i < len; ++i)
+	{
+		ArrayList.push_back(s.top());
+		s.pop();
+	}
+	return ArrayList;
+}
 int main()
 {
 	vector<vector<int>> array{{ 1, 2, 3 } ,{4, 5, 6} , {7, 8, 9}};
