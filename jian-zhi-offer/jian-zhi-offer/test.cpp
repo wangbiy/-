@@ -191,6 +191,88 @@ int jumpFloor(int number)
 	return arr[number];
 	delete[]arr;
 }
+//变态跳台阶，一次可以跳1阶、2阶.....n阶
+int jumpFloorII1(int number)
+{
+	if (number == 0)
+		return 0;
+	int ret = 1;
+	for (int i = 2; i <= number; ++i)
+	{
+		ret *= 2;
+	}
+	return ret;
+}
+int jumpFloorII2(int number)
+{
+	if (number == 0)
+		return 0;
+	return 1 << (number - 1);
+}
+//矩形覆盖
+int rectCover(int number)
+{
+	if (number == 0)
+		return 0;
+	if (number == 1 || number == 2)
+		return number;
+	return rectCover(number - 1) + rectCover(number - 2);
+}
+//二进制中1的个数
+int NumberOf1(int n)
+{
+	if (n == 0)
+		return 0;
+	int count = 0;
+	while (n)
+	{
+		count++;
+		n = n&(n - 1);
+	}
+	return count;
+}
+//数值的整数次方，求base的exponent的次方
+double Power(double base, int exponent)
+{
+	if (base == 0)
+		return 0;
+	double sum = 1;
+	int e = exponent;
+	if (exponent < 0)
+	{
+		e = -exponent;
+	}
+	while (e != 0)
+	{
+		sum *= base;
+		e--;
+	}
+	if (exponent < 0)
+		sum = 1 / sum;
+	return sum;
+}
+//输入一个整数数组，实现一个函数来调整该数组中数字的顺序，
+//使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，
+//并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+void reOrderArray(vector<int> &array)
+{
+	int len = array.size();
+	for (int i = 0; i < len; ++i)
+	{
+		for (int j = 0; j < len - 1; ++j)
+		{
+			if (array[j] % 2 == 0 && array[j + 1] % 2 != 0)//说明前面的是偶数，后面的是奇数
+			{
+				int temp = array[j];
+				array[j] = array[j + 1];
+				array[j + 1] = temp;
+			}
+		}
+	}
+}
+//我们可以知道，此种问题的可扩展性非常强，比如所有负数都在非负数的前面，
+//能够被3整除的数在不能被3整除的数的前面等等，这样我们就需要考虑将这样的功能抽象出来，
+//利用函数指针的原理即可
 int main()
 {
 	vector<vector<int>> array{{ 1, 2, 3 } ,{4, 5, 6} , {7, 8, 9}};
@@ -211,5 +293,28 @@ int main()
 	cout << r << endl;
 	r = Fibonacci2(5);
 	cout << r << endl;
+
+	int count=jumpFloorII1(4);
+	cout << "跳法有" << count << "种" << endl;
+
+	count = jumpFloorII2(4);
+	cout << "跳法有" << count << "种" << endl;
+
+	count = rectCover(5);
+	cout << "矩形覆盖方法有" << count << "种" << endl;
+
+	count = NumberOf1(5);
+	cout << "5的二进制中1的个数为" << count << endl;
+
+	double sum = Power(3.1, 2);
+	cout << "3.1的2次方为" << sum << endl;
+
+	vector<int> a{ 1, 3, 2, 4, 5, 12, 8, 9, 10, 18, 24 };
+	reOrderArray(a);
+	for (auto e : a)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
 	return 0;
 }
