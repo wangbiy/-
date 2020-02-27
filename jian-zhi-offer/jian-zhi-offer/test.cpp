@@ -273,6 +273,52 @@ void reOrderArray(vector<int> &array)
 //我们可以知道，此种问题的可扩展性非常强，比如所有负数都在非负数的前面，
 //能够被3整除的数在不能被3整除的数的前面等等，这样我们就需要考虑将这样的功能抽象出来，
 //利用函数指针的原理即可
+//顺时针打印矩形例如，如果输入如下4 X 4矩阵:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 
+//则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
+vector<int> printMatrix(vector<vector<int>> matrix)
+{
+	vector<int> result;
+	int row = matrix.size();
+	int col = matrix[0].size();
+	if (matrix.empty() || row==0 || col==0)
+		return result;
+	int start = 0;//用来标记左上角的坐标
+	while (row > start * 2 && col > start * 2)
+	{
+		//第一行
+		for (int i = start; i <= col - 1 - start; ++i)
+		{
+			result.push_back(matrix[start][i]);
+		}
+		//最后一列
+		if (start < row - 1 - start)
+		{
+			//从最后一列的start+1行元素开始，因为start行已经插入过了
+			for (int i = start + 1; i <= row - 1 - start; ++i)
+			{
+				result.push_back(matrix[i][col - 1 - start]);
+			}
+		}
+		//最后一行
+		if (start < row - 1 - start && start < col - 1 - start)
+		{
+			for (int i = col - 1 - 1 - start; i >= start; --i)
+			{
+				result.push_back(matrix[row - 1 - start][i]);
+			}
+		}
+		//第一列
+		if (start < col - 1 - start && start < row - 1 - 1 - start)
+		{
+			for (int i = row - 1 - 1 - start; i >= start + 1; --i)
+			{
+				result.push_back(matrix[i][start]);
+			}
+		}
+		start++;
+	}
+	return result;
+}
 int main()
 {
 	vector<vector<int>> array{{ 1, 2, 3 } ,{4, 5, 6} , {7, 8, 9}};
@@ -315,6 +361,12 @@ int main()
 	{
 		cout << e << " ";
 	}
+	cout << endl;
+
+	vector<vector<int>> matrix{ { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 16 } };
+	vector<int> b = printMatrix(matrix);
+	for (auto e : b)
+		cout << e << " ";
 	cout << endl;
 	return 0;
 }
