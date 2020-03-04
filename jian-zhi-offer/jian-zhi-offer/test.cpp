@@ -319,6 +319,33 @@ vector<int> printMatrix(vector<vector<int>> matrix)
 	}
 	return result;
 }
+//数组中出现次数大于数组一半的元素
+int MoreThanHalfNum_Solution(vector<int> numbers)
+{
+	int len = numbers.size();
+	if (len == 0)
+		return 0;
+	int times = 1;
+	int ret = numbers[0];
+	for (int i = 0; i<len; ++i)
+	{
+		if (times == 0)
+		{
+			ret = numbers[i];
+			times = 1;
+		}
+		else if (numbers[i] == ret)
+			times++;
+		else times--;
+	}
+	times = 0;
+	for (int i = 0; i<len; ++i)
+	{
+		if (ret == numbers[i])
+			times++;
+	}
+	return times>len / 2 ? ret : 0;
+}
 int main()
 {
 	vector<vector<int>> array{{ 1, 2, 3 } ,{4, 5, 6} , {7, 8, 9}};
@@ -368,5 +395,9 @@ int main()
 	for (auto e : b)
 		cout << e << " ";
 	cout << endl;
+
+	vector<int> c{ 1, 2, 3, 2, 2, 2, 5, 4, 2 };
+	count = MoreThanHalfNum_Solution(c);
+	cout << "数组中出现次数超过数组大小一半的元素是" << count << endl;
 	return 0;
 }
