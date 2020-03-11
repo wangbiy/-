@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 #include <vector>
+#if 0
 //1.二维数组中的查找
 bool Find(int target, vector<vector<int>> array)
 {
@@ -399,5 +400,83 @@ int main()
 	vector<int> c{ 1, 2, 3, 2, 2, 2, 5, 4, 2 };
 	count = MoreThanHalfNum_Solution(c);
 	cout << "数组中出现次数超过数组大小一半的元素是" << count << endl;
+	return 0;
+}
+#endif
+//字符串的排列：abc-abc/acb/bac/bca/cab/cba
+#include <algorithm>
+class S
+{
+private:
+	vector<string> result;
+public:
+	vector<string> Permutation(string str)
+	{
+		if (str.empty())
+			return result;
+		Helper(str, 0);
+		sort(result.begin(), result.end());//结果是按照字符串大小排序的，因此先要排序才能返回
+		return result;
+	}
+private:
+	void Helper(string str, int begin)
+	{
+		if (begin == str.size())//递归条件
+		{
+			result.push_back(str);
+			return;
+		}
+		else
+		{
+			for (int i = begin; str[i] != '\0'; ++i)
+			{
+				if (i != begin && str[i] == str[begin])//如果首字符后面又和他相同的字符，不用交换
+					continue;
+				swap(str[i], str[begin]);//以a为首字符的情况，循环一次为以b为首字符的情况，再循环一次为c为首字符的情况
+				Helper(str, begin + 1);//首字符其后的字符进行递归
+				swap(str[i], str[begin]);//依次让b/c为首字符，每循环一次交换一次，第一次是a为首字符
+			}
+		}
+	}
+};
+//数组中出现次数超过一半的元素
+int MoreThanHalfNum_Solution(vector<int> numbers) 
+{
+	if (numbers.empty())
+		return 0;
+	int len = numbers.size();
+	int count = 1;
+	int ret = numbers[0];
+	for (int i = 0; i<len; ++i)
+	{
+		if (count == 0)
+		{
+			ret = numbers[i];
+			count = 1;
+		}
+		else if (ret == numbers[i])
+			count++;
+		else
+			count--;
+	}
+	//ret存数组中的一个数字，count存次数
+	//一开始ret存数组第一个数字，count为1，遍历数组，如果与ret相同，count++，如果不同就--
+	//如果中间count为0，表示之前的数字达到的次数不是之前所有元素出现次数的一半已经抵消了
+	//因此这样下来，最后一个把次数设为1的数一定是找的数，放入ret中
+	count = 0;
+	for (int i = 0; i<len; ++i)
+	{
+		if (ret == numbers[i])
+			count++;
+	}
+	return count>len / 2 ? ret : 0;
+}
+int main()
+{
+	S s;
+	vector<string> v = s.Permutation("abc");
+	vector<int> arr{ 1, 2, 3, 2, 2, 2, 5, 4, 2 };
+	int ret = MoreThanHalfNum_Solution(arr);
+	cout << ret << endl;
 	return 0;
 }
