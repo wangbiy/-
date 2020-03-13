@@ -471,6 +471,57 @@ int MoreThanHalfNum_Solution(vector<int> numbers)
 	}
 	return count>len / 2 ? ret : 0;
 }
+//输入n个整数，找出其中最小的K个数，
+//例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4
+vector<int> GetLeastNumbers_Solution1(vector<int> input, int k)
+{
+	vector<int> result;
+	if (input.empty() || k == 0 || k > input.size())
+		return result;
+	sort(input.begin(), input.end());
+	for (int i = 0; i < k; ++i)
+	{
+		result.push_back(input[i]);
+	}
+	return result;
+}
+vector<int> GetLeastNumbers_Solution2(vector<int> input, int k)
+{
+	vector<int> result;
+	if (input.empty() || k == 0 || k>input.size())
+		return result;
+	for (int i = 0; i < k; ++i)
+	{
+		result.push_back(input[i]);
+	}
+	make_heap(result.begin(), result.end());//前k个元素建大堆
+	for (int i = k; i < input.size(); ++i)
+	{
+		if (input[i] < result[0])//剩下的元素与堆顶元素相比，如果比他小就rag堆顶元素出来，插入这个元素
+		{
+			pop_heap(result.begin(), result.end());
+			result.pop_back();
+			result.push_back(input[i]);
+			push_heap(result.begin(), result.end());
+		}
+	}
+	sort(result.begin(), result.end());
+	return result;
+}
+//连续子数组的最大和
+int FindGreatestSumOfSubArray(vector<int> array)
+{
+	if (array.empty())
+		return 0;
+	int maxSum = array[0];
+	int sum = array[0];
+	for (int i = 1; i < array.size(); ++i)
+	{
+		sum = (sum>0) ? (sum + array[i]) : array[i];
+		maxSum = (maxSum < sum) ? sum : maxSum;
+	}
+	return maxSum;
+}
 int main()
 {
 	S s;
@@ -478,5 +529,10 @@ int main()
 	vector<int> arr{ 1, 2, 3, 2, 2, 2, 5, 4, 2 };
 	int ret = MoreThanHalfNum_Solution(arr);
 	cout << ret << endl;
+	vector<int> result1= GetLeastNumbers_Solution1(arr, 3);
+	vector<int> result2 = GetLeastNumbers_Solution2(arr, 3);
+	vector<int> array{6, -3, -2, 7, -15, 1, 2, 2};
+	int n = FindGreatestSumOfSubArray(array);
+	cout << n << endl;
 	return 0;
 }
