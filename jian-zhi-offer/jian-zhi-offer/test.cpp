@@ -522,6 +522,34 @@ int FindGreatestSumOfSubArray(vector<int> array)
 	}
 	return maxSum;
 }
+//字符串过滤deefd---def
+void stringfiler(const char* s1, int len, char* s2)
+{
+	if (s1 == nullptr)
+		return;
+	int hash[26];
+	for (int i = 0; i < 26; ++i)
+	{
+		hash[i] = 0;
+	}
+	int k = 0;
+	for (int i = 0; i < len; ++i)
+	{
+		int index = s1[i] - 'a';//转换为数字
+		if (hash[index] == 0)//说明s2中没有这个元素
+		{
+			s2[k++] = s1[i];
+		}
+		//这里说明s2中存在这个元素和在放入元素后的操作
+		hash[index] = 1;
+	}
+	s2[k] = '\0';
+	for (int i = 0; i < k; ++i)
+	{
+		cout << s2[i];
+	}
+	cout << endl;
+}
 int main()
 {
 	S s;
@@ -534,5 +562,10 @@ int main()
 	vector<int> array{6, -3, -2, 7, -15, 1, 2, 2};
 	int n = FindGreatestSumOfSubArray(array);
 	cout << n << endl;
+
+	char* s1 = "deefd";
+	int len = strlen(s1);
+	char* s2 = new char(len);;
+	stringfiler(s1, len, s2);
 	return 0;
 }
