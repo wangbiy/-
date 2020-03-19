@@ -198,3 +198,218 @@ Node* copy(Node* head)
 	return pNewNode;
 }
 #endif
+//二叉树的操作
+#include <iostream>
+using namespace std;
+//二叉树的构造
+struct TreeNode
+{
+	TreeNode* _pLeft;
+	TreeNode* _pRight;
+	char _val;
+	TreeNode(char val)
+		:_pLeft(nullptr)
+		, _pRight(nullptr)
+		, _val(val)
+	{}
+};
+TreeNode* _CreateTree(char* arr, int size, int* index)
+{
+	TreeNode* pRoot = nullptr;
+	if (*index < size && arr[*index] != '#')
+	{
+		pRoot = new TreeNode(arr[*index]);//先构造根结点
+		(*index)++;
+		pRoot->_pLeft = _CreateTree(arr, size, index);
+		(*index)++;
+		pRoot->_pRight = _CreateTree(arr, size, index);
+	}
+	return pRoot;
+}
+TreeNode* CreateTree(char* arr, int size)
+{
+	int index = 0;
+	return _CreateTree(arr, size, &index);
+}
+//二叉树的拷贝
+TreeNode* CopyTree(TreeNode* pRoot)
+{
+	TreeNode* pNewNode = nullptr;
+	if (pRoot)
+	{
+		pNewNode = new TreeNode(pRoot->_val);
+		pNewNode->_pLeft = CopyTree(pRoot->_pLeft);
+		pNewNode->_pRight = CopyTree(pRoot->_pRight);
+	}
+	return pNewNode;
+}
+//二叉树的销毁
+void Destroy(TreeNode** pRoot)
+{
+	if (*pRoot)
+	{
+		Destroy(&(*pRoot)->_pRight);//先销毁右子树
+		Destroy(&(*pRoot)->_pLeft);
+		free(*pRoot);
+		*pRoot = nullptr;
+	}
+}
+//二叉树先序中序后序递归遍历
+void preorder(TreeNode* pRoot)
+{
+	if (pRoot == nullptr)
+		return;
+	cout << pRoot->_val << " ";
+	preorder(pRoot->_pLeft);
+	preorder(pRoot->_pRight);
+}
+void inorder(TreeNode* pRoot)
+{
+	if (pRoot == nullptr)
+		return;
+	inorder(pRoot->_pLeft);
+	cout << pRoot->_val << " ";
+	inorder(pRoot->_pRight);
+}
+void postorder(TreeNode* pRoot)
+{
+	if (pRoot == nullptr)
+		return;
+	postorder(pRoot->_pLeft);
+	postorder(pRoot->_pRight);
+	cout << pRoot->_val << " ";
+}
+//先序中序后序非递归遍历
+#include <stack>
+void preorderNOR(TreeNode* pRoot)
+{
+	TreeNode* pCur = pRoot;
+	stack<TreeNode*> s;
+	while (pCur != nullptr && !s.empty())
+	{
+		while (pCur != nullptr)
+		{
+			cout << pCur->_val << " ";
+			s.push(pCur);
+			pCur = pCur->_pLeft;
+		}
+		TreeNode* top = s.top();
+		s.pop();
+		pCur = top->_pRight;
+	}
+}
+void inorderNOR(TreeNode* pRoot)
+{
+	TreeNode* pCur = pRoot;
+	stack<TreeNode*> s;
+	while (pCur != nullptr && !s.empty())
+	{
+		while (pCur != nullptr)
+		{
+			s.push(pCur);
+			pCur = pCur->_pLeft;
+		}
+		TreeNode* top = s.top();
+		cout << top->_val << " ";
+		s.pop();
+		pCur = top->_pRight;
+	}
+}
+void postorderNOR(TreeNode* pRoot)
+{
+	TreeNode* pCur = pRoot;
+	TreeNode* last = nullptr;
+	stack<TreeNode*> s;
+	while (pCur != nullptr && !s.empty())
+	{
+		while (pCur != nullptr)
+		{
+			s.push(pCur);
+			pCur = pCur->_pLeft;
+		}
+		TreeNode* top = s.top();
+		if (top->_pRight == nullptr || top->_pRight == last)
+		{
+			cout << top->_val << " ";
+			s.pop();
+			last = top;
+		}
+		else
+		{
+			pCur = top->_pRight;
+		}
+	}
+}
+//层序遍历
+#include <queue>
+void levelorder(TreeNode* pRoot)
+{
+	if (pRoot == nullptr)
+		return;
+	queue<TreeNode*> q;
+	q.push(pRoot);
+	while (!q.empty())
+	{
+		TreeNode* front = q.front();
+		q.pop();
+		cout << front->_val << " ";
+		if (front->_pLeft)
+			q.push(front->_pLeft);
+		if (front->_pRight)
+			q.push(front->_pRight);
+	}
+}
+//获取二叉树中节点的个数方法1
+int GetCount1(TreeNode* pRoot)
+{
+	if (pRoot == nullptr)
+		return 0;
+	int left = GetCount1(pRoot->_pLeft);
+	int right = GetCount1(pRoot->_pRight);
+	return left + right + 1;
+}
+//获取二叉树中节点的个数方法2
+int _GetCount2(TreeNode* pRoot, int* count)
+{
+	if (pRoot == nullptr)
+		return 0;
+	else
+	{
+		(*count)++;
+		_GetCount2(pRoot->_pLeft,count);
+		_GetCount2(pRoot->_pRight,count);
+	}
+	return *count;
+}
+int GetCount2(TreeNode* pRoot)
+{
+	int count = 0;
+	return _GetCount2(pRoot, &count);
+}
+int main()
+{
+	char* str = "ABD##E#H##CF##G##";
+	TreeNode* a = CreateTree(str, strlen(str));
+	cout << "创建二叉树成功" << endl;
+	TreeNode* pNewNode = CopyTree(a);
+	cout << "拷贝二叉树成功" << endl;
+	preorder(a);
+	cout << endl;
+	inorder(a);
+	cout << endl;
+	postorder(a);
+	cout << endl;
+	preorderNOR(a);
+	cout << endl;
+	inorderNOR(a);
+	cout << endl;
+	postorderNOR(a);
+	cout << endl;
+	levelorder(a);
+	cout << endl;
+	int count = GetCount1(a);
+	cout << "结点个数为:" << count << endl;
+	count = GetCount2(a);
+	cout << "结点个数为:" << count << endl;
+	return 0;
+}
