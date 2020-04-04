@@ -217,6 +217,7 @@ int main()
 	return 0;
 }
 #endif
+#if 0
 //分解因数
 //给定的正整数a，分解成若干个素数的乘积，
 //即 a = a1 × a2 × a3 × ... × an,并且 1 < a1 ≤ a2 ≤ a3 ≤ ...≤ an,
@@ -239,3 +240,4 @@ int main()
 	}
 	return 0;
 }
+#endif
