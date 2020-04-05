@@ -241,3 +241,50 @@ int main()
 	return 0;
 }
 #endif
+//将字符串前面的若干个字符移到字符串的尾部
+//方法一、暴力解决，将字符一个一个移到末尾
+//先定义一个将一个字符移到末尾的函数
+void removech(string& s, int n)
+{
+	char ch = s[0];
+	for (int i = 1; i < n; ++i)
+	{
+		s[i - 1] = s[i];//全部向前移一个位置，再将ch放到最后即可
+	}
+	s[n - 1] = ch;
+}
+//然后将这个函数调用要移动的字符的个数次即可
+void remove(string& s,int size,int m)//移动m个字符
+{
+	while (m--)
+	{
+		removech(s, size);
+	}
+}
+//但是蛮力法的时间复杂度是O(mn),因此我们要使用一种降低时间复杂度的方法
+//可以将字符串分为要移动的字符和不用移动的字符两部分，先将两部分分别反转即可得到，然后将整个字符串反转
+void reverseString(string& s, int start,int end)
+{
+	while (start < end)
+	{
+		char t = s[start];
+		s[start] = s[end];
+		s[end] = t;
+		start++;
+		end--;
+	}
+}
+void reverse(string& s, int n,int m)//要移动m位
+{
+	m %= n;//防止出现m>n的情况
+	reverseString(s, 0, m - 1);//先将两部分分别反转
+	reverseString(s, m, n - 1);
+	reverseString(s, 0, n - 1);//再整体反转
+}
+int main()
+{
+	string s = "abcdefg";
+	//remove(s, s.size(), 3);
+	reverse(s, s.size(), 3);
+	return 0;
+}
