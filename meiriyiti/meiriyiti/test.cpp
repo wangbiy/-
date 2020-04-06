@@ -241,6 +241,7 @@ int main()
 	return 0;
 }
 #endif
+#if 0
 //将字符串前面的若干个字符移到字符串的尾部
 //方法一、暴力解决，将字符一个一个移到末尾
 //先定义一个将一个字符移到末尾的函数
@@ -286,5 +287,153 @@ int main()
 	string s = "abcdefg";
 	//remove(s, s.size(), 3);
 	reverse(s, s.size(), 3);
+	return 0;
+}
+#endif
+#if 0
+//单词反转问题
+#include <string>
+void reverse(string& s, int start, int end)//整体反转
+{
+	while (start < end)
+	{
+		char t = s[start];
+		s[start] = s[end];
+		s[end] = t;
+		start++;
+		end--;
+	}
+}
+void reversestring(string& s, int n)
+{
+	//先整体反转
+	reverse(s, 0, n - 1);
+	int start = 0;
+	int end = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		if (s[i] == ' ')
+		{
+			end = i;
+			reverse(s, start, end);
+			start = end + 1;
+		}
+	}
+}
+int main()
+{
+	string s = "I am a student";
+	reversestring(s, s.size());
+}
+#endif
+#if 0
+//数据库连接池问题
+//也就是如果遇到一个连接就创建一个连接，得到最后的最多连接数
+//例如输入  6 A connect、A disconnect、B connect、C connect、B disconnect、C disconnect
+//输出2
+//就是求最多需要连接数保证所有的都能执行
+#include <set>
+#include <string>
+int main()
+{
+	int n;
+	while (cin >> n)
+	{
+		string id, mes;
+		set<string> pool;
+		int MaxSize = 0;
+		for (int i = 0; i < n; ++i)
+		{
+			cin >> id >> mes;
+			if (mes == "connect")
+				pool.insert(id);
+			else if (mes == "disconnect")
+				pool.erase(id);
+			int size = pool.size();
+			MaxSize = MaxSize>size ? MaxSize : size;
+		}
+		cout << MaxSize << endl;
+	}
+	return 0;
+}
+#endif
+#if 0
+//实现mkdir -p功能，就是如果出现类似/usr/local /usr/local/test,就不用再创建第二遍/usr/local了
+//如果出现两个字符串相同，也不用再创建一次，如果不同且不是子串的关系，才能创建
+#include <vector>
+#include <string>
+#include <algorithm>
+int main()
+{
+	int n;
+	while (cin >> n)
+	{
+		vector<string> ret(n);//保存每个字符串
+		vector<bool> flag(n, true);//表示两个字符串中前面的那一个能不能被创建
+		for (int i = 0; i < n; ++i)
+		{
+			cin >> ret[i];
+		}
+		sort(ret.begin(), ret.end());//将类似的字符串放在一起
+		for (int i = 0; i < ret.size() - 1; ++i)//遍历字符串数组进行判断
+		{
+			if (ret[i] == ret[i + 1])//两个字符串相等
+				flag[i] = false;
+			else if (ret[i].size() < ret[i + 1].size() && ret[i] == ret[i + 1].substr(0, ret[i].size()) && ret[i + 1][ret[i].size()] == '/')
+				flag[i] = false;
+		}
+		for (int i = 0; i < ret.size(); ++i)
+		{
+			if (flag[i] == true)
+				cout << "mkdir -p " << ret[i] << endl;
+		}
+		cout << endl;
+	}
+	return 0;
+}
+#endif
+//字符串的包含
+//也就是判断a字符串中是否包含B字符串
+#if 0
+//方法1.暴力法
+#include <string>
+bool contain1(string a, string b)
+{
+	for (int i = 0; i < b.size(); ++i)
+	{
+		int j;
+		for (j = 0; j < a.size() && a[j] != b[i]; ++j)
+			;//一直找看a中有没有和b当前字符相同的
+		//找到这说明在a中找到和b中字符相同的了
+		if (j>a.size())
+			return false;
+	}
+	//这里说明包含
+	return true;
+}
+#endif
+//但是暴力法的时间复杂度是O(a的长度*b的长度），时间复杂度很大，因此我们必须要进行优化
+//可以分别对两个字符串进行排序，然后进行轮询
+#include <algorithm>
+bool contain2(string a, string b)
+{
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+	for (int i = 0, j = 0; j < b.size();)
+	{
+		while (i < a.size() && a[i] < b[j])//要是a当前的字符小于b当前的字符
+			i++;
+		if (i>a.size() && a[i]>b[j])//说明在a中一定不存在b
+			return false;
+		j++;
+	}
+	return true;
+}
+int main()
+{
+	string a = "abcabc";
+	string b = "abc";
+	bool flag = contain2(a, b);
+
 	return 0;
 }
