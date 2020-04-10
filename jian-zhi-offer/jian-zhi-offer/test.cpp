@@ -550,6 +550,52 @@ void stringfiler(const char* s1, int len, char* s2)
 	}
 	cout << endl;
 }
+//1的个数
+#if 0
+//首先使用暴力法
+int NumberOf1Between1AndN_Solution(int n)
+{
+	int count = 0;
+	for (int i = 0; i <= n; ++i)
+	{
+		int t = i;
+		while (t % 10 == 1)
+			count++;
+		t /= 10;
+	}
+	return count;
+}
+#endif
+//另一种方法就是使用更高位和更低位表示
+//例如我们计算cur位的数，要收到三种影响：
+//1.当前cur位的数、2.cur位以上的数、3.cur位以下的数
+//例如若cur位为0（例如12013，此时我们cur位是百位），则百位出现1的情况就是：
+//100到199、1100到1199、2100到2199、.......11100到11199，共1200个，也就是12*100
+//而百位（cur位）为1时，例如12113，则百位出现1的情况为：
+//100到199,1100到1199,2100到2199，。。。11100到11199，也是12*100个，
+//此时还要考虑更低位的情况，为12100到12113，共14个，也就是13（更低位）+1
+//如果cur位（百位）大于0，例如12213，此时百位为1的情况就是：
+//100到199,1100到1199,2100到2199.。。11100到11199,12100到12199，共1300个
+//此时也就是（12+1）*100，也就是（更高位+1)*100
+int NumberOf1Between1AndN_Solution(int n)
+{
+	int i = 1;//通过i来计算cur位
+	int count = 0;
+	while (n / i != 0)
+	{
+		int before = n / i / 10;
+		int after = n%i;
+		int cur = (n / i) % 10;
+		if (cur == 0)
+			count += before*i;
+		else if (cur == 1)
+			count += before*i + after + 1;
+		else
+			count += (before + 1)*i;
+		i *= 10;
+	}
+	return count;
+}
 int main()
 {
 	S s;
@@ -567,5 +613,8 @@ int main()
 	int len = strlen(s1);
 	char* s2 = new char(len);;
 	stringfiler(s1, len, s2);
+
+	int count = NumberOf1Between1AndN_Solution(12013);
+	cout << count << endl;
 	return 0;
 }
