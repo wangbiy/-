@@ -412,6 +412,7 @@ bool contain1(string a, string b)
 	return true;
 }
 #endif
+#if 0
 //但是暴力法的时间复杂度是O(a的长度*b的长度），时间复杂度很大，因此我们必须要进行优化
 //可以分别对两个字符串进行排序，然后进行轮询
 #include <algorithm>
@@ -435,5 +436,45 @@ int main()
 	string b = "abc";
 	bool flag = contain2(a, b);
 
+	return 0;
+}
+#endif
+#include <string>
+#include <algorithm>
+//最长公共子序列
+//也就是字符串换1：abcdaf,字符串2：acbcf:此时的最长公共子序列就是abcf
+int main()
+{
+	string s1, s2;
+	cin >> s1 >> s2;
+	int m = s1.size();
+	int n = s2.size();
+	vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+	//先将第0行和第0列都初始化为0
+	for (int i = 0; i < n + 1; ++i)
+		dp[i][0] = 0;
+	for (int i = 0; i < m + 1; ++i)
+		dp[0][i] = 0;
+	//然后进行实现
+	for (int i = 1; i < n + 1; ++i)
+	{
+		for (int j = 1; j < m + 1; ++j)
+		{
+			if (s1[j - 1] == s2[i - 1])
+				dp[i][j] = dp[i - 1][j - 1] + 1;
+			else
+				dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+		}
+	}
+	for (int i = 1; i < n + 1; ++i)
+	{
+		for (int j = 1; j < m + 1; ++j)
+		{
+			cout << dp[i][j] << " ";
+		}
+		cout << endl;
+	}
+	//输出长度
+	cout << dp[n][m] << endl;
 	return 0;
 }
