@@ -23,6 +23,63 @@ vector<int> twonum(vector<int>& nums, int target)
 	}
 	return arr;
 }
+//合并k个有序链表
+#if 0
+//方法1，使用优先级队列，每次将每个链表的第一个结点存入优先级队列，然后弹出，存入结果链表
+ListNode* mergeKLists(vector<listNode*>& lists)
+{
+	priority_queue<ListNode*, vector<ListNode*>, com> q;
+	for (auto e : lists)
+	{
+		if (e)
+			q.push(e);
+	}
+	ListNode result(-1);
+	ListNode* h = &result;
+	while (!q.empty())
+	{
+		ListNode* top = q.top();
+		q.pop();
+		h->next = top;
+		h = top;
+		if (top->next)
+			q.push(top->next);
+	}
+	return result.next;
+}
+#endif
+#if 0
+//方法2，先实现两两合并链表，然后实现
+ListNode* mergelists(ListNode* head1, ListNode* head2)
+{
+	if (head1 == nullptr)
+		return head2;
+	if (head2 == nullptr)
+		return head1;
+	if (head1->val <= head2->val)
+	{
+		head1->next = mergelists(head1->next, head2);
+		return head1;
+	}
+	else
+	{
+		head2 -> next = mergelists(head1, head2->next);
+		return head2;
+	}
+}
+ListNode* mergeKlists(vector<ListNode*>& lists)
+{
+	if (lists.size()==0)
+		return nullptr;
+	ListNode* head = lists[0];
+	for (int i = 1; i < lists.size(); ++i)
+	{
+		if (lists[i])
+			head = mergelists(head, lists[i]);
+	}
+	return head;
+}
+#endif
 int main()
 {
 	vector<int> nums{ 2, 3, 1, 4, 5 };
