@@ -4,6 +4,7 @@ using namespace std;
 #include <stack>
 #include <queue>
 #include <map>
+#include <string>
 //给定一个整数数组 nums 和一个目标值 target，
 //请你在该数组中找出和为目标值的那两个整数，并返回他们的数组下标
 vector<int> twonum(vector<int>& nums, int target)
@@ -80,6 +81,29 @@ ListNode* mergeKlists(vector<ListNode*>& lists)
 	return head;
 }
 #endif
+int max(int a, int b)
+{
+	return a > b ? a : b;
+}
+//无重复子串的最大长度
+int lengthOfLongestSubstring(string s)
+{
+	vector<int> table(128, -1);
+	int left = -1;
+	int right, maxlen = 0;
+	for (right = 0; right < s.size(); ++right)
+	{
+		if (table[s[right]] == -1 || left>table[s[right]])
+			table[s[right]] = right;
+		else
+		{
+			maxlen = max(maxlen, right - left - 1);
+			left = table[s[right]];
+			table[s[right]] = right;
+		}
+	}
+	return max(maxlen, right - left - 1);
+}
 int main()
 {
 	vector<int> nums{ 2, 3, 1, 4, 5 };
@@ -87,5 +111,8 @@ int main()
 	vector<int> result = twonum(nums, target);
 	for (int i = 0; i < result.size(); ++i)
 		cout << result[i] << " ";
+
+	int len = lengthOfLongestSubstring("abcabcabc");
+	cout << len << endl;
 	return 0;
 }
