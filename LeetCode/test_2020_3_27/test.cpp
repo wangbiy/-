@@ -104,6 +104,64 @@ int lengthOfLongestSubstring(string s)
 	}
 	return max(maxlen, right - left - 1);
 }
+//最大回文长度
+//使用从回文中间向左右推进的方法来实现回文串，然后在这些回文串中找最大的即可
+#include <string>
+string searchfromCenter(string s, int left, int right)
+{
+	while (left >= 0 && right < s.size())
+	{
+		if (s[left] == s[right])//继续推进
+		{
+			left--;
+			right++;
+		}
+		else
+			break;
+	}
+	return s.substr(left + 1, right - left - 1);//截取left和right中间的字符串，不包含left和right，这就是所得到的回文串
+}
+string longestPalindrome(string s)
+{
+	if (s.size() == 0 || s.size() == 1)
+		return s;
+	int maxLen = 1;//一开始最大回文串的长度是1，因为是单个字符表示回文串
+	string result = s.substr(0, 1);
+	for (int i = 0; i < s.size() - 1; ++i)
+	{
+		string s1 = searchfromCenter(s, i, i);//表示回文中间是一个字符的情况
+		string s2 = searchfromCenter(s, i, i + 1);//表示回文中间是两个字符间隙的情况
+		string s3 = s1.size()>s2.size() ? s1 : s2;
+		if (maxLen < s3.size())
+		{
+			maxLen = s3.size();
+			result = s3;
+		}
+	}
+	return result;
+}
+//Z字形变换
+string convert(string s, int numRows)
+{
+	if (numRows == 1)
+		return s;
+	vector<string> rows(min(numRows, int(s.size())));
+	int cur = 0;//当前所在字符的位置，用来看什么时候对折
+	bool goingdown = false;//用来表示是否已经到了要对折的点
+	for (char e : s)
+	{
+		rows[cur] += e;
+		if (cur == 0 || cur == numRows - 1)//开始对折
+		{
+			goingdown = !goingdown;
+		}
+		cur += goingdown ? 1 : -1;
+	}
+	string result;
+	for (string row : rows)
+		result += row;
+	return result;
+}
 int main()
 {
 	vector<int> nums{ 2, 3, 1, 4, 5 };
@@ -114,5 +172,11 @@ int main()
 
 	int len = lengthOfLongestSubstring("abcabcabc");
 	cout << len << endl;
+
+	string ret = longestPalindrome("babad");
+
+	string str = "LEETCODEISHIRING";
+	ret = convert(str, 3);
+	cout << ret << endl;
 	return 0;
 }
