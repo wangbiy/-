@@ -162,6 +162,107 @@ string convert(string s, int numRows)
 		result += row;
 	return result;
 }
+//整数反转
+int reverse(int x)
+{
+	if (x == 0)
+		return 0;
+	long long _x = x;
+	int sum = 0;
+	bool flag = true;
+	vector<int> arr(15, 0);
+	int i = 0;//表示位数
+	if (_x < 0)
+	{
+		flag = false;
+		_x = 0 - _x;
+	}
+	while (_x)
+	{
+		sum = _x % 10;
+		_x /= 10;
+		arr[i] = sum;
+		i++;
+	}
+	i -= 1;
+	for (int j = 0; j <= i; ++j)
+	{
+		_x += (arr[j] * pow(10, i - j));
+	}
+	if (_x > (pow(2, 31) - 1) || _x < (pow(-2, 31)))
+	{
+		_x = 0;
+	}
+	else
+	{
+		if (!flag)//说明是负数
+		{
+			_x = 0 - _x;
+		}
+	}
+	return _x;
+}
+//字符串转换函数atoi
+int myAtoi(string s)
+{
+	//先将空格丢弃掉
+	int i = 0;
+	bool flag = true;
+	int result = 0;
+	while (s[i] == ' ')
+	{
+		i++;
+	}
+	if (s[i] == '-')
+	{
+		flag = false;
+	}
+	if (s[i] == '-' || s[i] == '+')
+	{
+		i++;
+	}
+	//开始进行转换
+	while (i < s.size() && isdigit(s[i]))
+	{
+		int tmp = s[i] - '0';
+		if (result>INT_MAX / 10 || (result == INT_MAX / 10 && tmp > 7))
+		{
+			return 0;
+		}
+		result = result * 10 + tmp;
+		i++;
+	}
+	return flag ? result : -result;
+}
+//盛最多水的容器
+//也就是输入一个数组，每个数组的元素值是当前容器垂直线的高度，构成坐标，要算能容纳最多的容积
+//使用两个指针，一个从左遍历，一个从右遍历，向中间推进，直到相交，如果左边的高度小于右边的，
+//将此时两者之间的容积保存，然后左边的向右推进，右边的高度如果小于左边的也是先保存两者之间容积，
+//然后向中间推进，每推进一次，将此时保存的容积与上一次最大的容积比较得出最大的即可
+int maxArea(vector<int>& height)
+{
+	if (height.size() < 2)
+		return 0;
+	int left = 0;
+	int right = height.size() - 1;
+	int sum = 0;//保存每次的容积
+	int max = 0;//保存每次比较的最大的容积
+	while (left < right)//不能相交，因此不能=
+	{
+		if (height[left] < height[right])
+		{
+			sum = (right - left)*height[left];
+			left++;
+		}
+		else
+		{
+			sum = (right - left)*height[right];
+			right--;
+		}
+		max = max>sum ? max : sum;
+	}
+	return max;
+}
 int main()
 {
 	vector<int> nums{ 2, 3, 1, 4, 5 };
@@ -178,5 +279,14 @@ int main()
 	string str = "LEETCODEISHIRING";
 	ret = convert(str, 3);
 	cout << ret << endl;
+
+	int num = reverse(-123);
+	cout << num << endl;
+	num = myAtoi("  -123 to hello");
+	cout << num << endl;
+
+	vector<int> height{ 1, 8, 6, 2, 5, 4, 8, 3, 7 };
+	int max = maxArea(height);
+	cout << max << endl;
 	return 0;
 }
