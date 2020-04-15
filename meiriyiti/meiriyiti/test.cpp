@@ -439,6 +439,7 @@ int main()
 	return 0;
 }
 #endif
+#if 0
 #include <string>
 #include <algorithm>
 //最长公共子序列
@@ -478,3 +479,198 @@ int main()
 	cout << dp[n][m] << endl;
 	return 0;
 }
+#endif
+#if 0
+//乒乓球框问题，也就是看A球框中是否包含B球框中所有种类的球
+#include <map>
+//这里使用两个map分别将A的元素和B的元素 存起来，然后看在A中同种有没有对应B
+#include <string>
+int main()
+{
+	string A, B;
+	while (cin >> A >> B)
+	{
+		bool flag = true;
+		map<char, int> m1, m2;//建立两个map分别将A和B的字符存进去
+		for (auto e : A)
+		{
+			m1[e]++;
+		}
+		for (auto e : B)
+		{
+			m2[e]++;
+		}
+		//然后再m2中遍历和m1中同种进行对比
+		for (auto it = m2.begin(); it != m2.end(); ++it)
+		{
+			if (m1[it->first]<it->second)
+				//说明不包含
+			{
+				flag = false;
+				break;
+			}
+		}
+		if (flag == true)
+			cout << "Yes" << endl;
+		else
+			cout << "No" << endl;
+	}
+	return 0;
+}
+#endif
+#if 0
+//查找兄弟单词问题
+//兄弟单词就是与查找单词长度相同，顺序不同的单词
+//我们最终返回的是字典序中第m个兄弟单词，且返回兄弟单词个数
+#include <algorithm>
+#include <vector>
+#include <string>
+bool isBrother(string s1, string s2)
+{
+	if (s1.size() == s2.size())
+	{
+		if (s1 == s2)
+			return false;
+		sort(s1.begin(), s1.end());
+		sort(s2.begin(), s2.end());
+		if (s1 == s2)
+			return true;
+	}
+	return false;
+}
+int main()
+{
+	int n;//n个单词
+	while (cin >> n)
+	{
+		string word;//要输入查找的单词
+		string s;//接收最后第m个兄弟单词
+		vector<string> arr(n);//字典，保存输入的单词
+		int m;//表示第m个兄弟单词
+		for (int i = 0; i < n; ++i)
+		{
+			cin >> arr[i];
+		}
+		//由于要按照字典序输出第m个兄弟单词，因此先排序
+		sort(arr.begin(), arr.end());
+		cin >> word;
+		cin >> m;
+		int count = 0;//统计兄弟单词个数
+		for (int i = 0; i < n; ++i)
+		{
+			if (isBrother(word, arr[i]))
+				count++;
+			if (count == m)
+				s = arr[i];
+		}
+		if (!arr.empty())
+			cout << count << endl;
+		if (count >= m)
+			cout << s << endl;
+	}
+	return 0;
+}
+#endif
+#if 0
+//骆驼命名法，即就是将类似于hello_world转为helloWorld
+//因此遍历字符串，遇到_就跳出循环继续执行，只要当前字符的前一个是'_'，就对该字符进行转换
+#include <string>
+int main()
+{
+	string c_str;
+	while (cin >> c_str)
+	{
+		for (int i = 0; i < c_str.size(); ++i)
+		{
+			if (c_str[i] == '_')
+				continue;
+			if (i >0 && c_str[i - 1] == '_')
+				cout << (char)toupper(c_str[i]);
+			else
+				cout << c_str[i];
+		}
+		cout << endl;
+	}
+	return 0;
+}
+#endif
+#if 0
+//单词倒转
+//当遇到不是大写或者小写字母的字符时，他就是分隔符，都转为空格
+//如果有多个分隔符，转为一个空格即可
+#include <string>
+#include <sstream>
+#include <vector>
+int main()
+{
+	string str;//接收istringstream接收进的字符串
+	string s;//输入的字符串
+	vector<string> arr;//保存切分的字符串
+	while (getline(cin,s))
+	{
+		istringstream ss(s);//从s对象中去读取字符，比如s中是"hello world",读出来就是hello world
+		while (ss >> str)//读到字符之后放在str中
+		{
+			for (int i = 0; i < str.size(); ++i)
+			{
+				if (!((str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z')))
+				{
+					str[i] = ' ';
+				}
+			}
+			istringstream temp(str);
+			while (temp >> str)
+				arr.push_back(str);
+		}
+		for (auto it = arr.rbegin(); it != arr.rend() - 1; ++it)
+		{
+			cout << *it << " ";
+		}
+		cout << arr[0];
+		cout << endl;
+	}
+	return 0;
+}
+#endif
+//字符串的全排列
+//即abc所能排列出的所有排列
+//abc acb bac bca cab cba
+//利用递归的方式来实现 
+//将a固定在第一位，对后面的bc来进行排列
+//将b固定在第一位，对后面的ac来进行排列
+//将c固定在第一位，对后面的ab来进行排列
+#include <string>
+void calcallpermutation(string& str, int from, int to)
+{
+	if (from == to)//说明已经得到全部的排列了，不用排了
+	{
+		for (int i = 0; i <= to; ++i)
+		{
+			cout << str[i];
+		}
+		cout << endl;
+	}
+	else
+	{
+		for (int j = from; j <= to; ++j)
+		{
+			swap(str[j], str[from]);//第一次交换是为了要每一个元素可以作为第一个
+			calcallpermutation(str, from + 1, to);//对第一个后面的继续进行全排列
+			swap(str[j], str[from]);//每一次一个元素作为第一个之后进行完排列，要进行复位以防对后面的产生影响
+		}
+	}
+}
+void perm(string& str)
+{
+	int from = 0;
+	int to = str.size() - 1;
+	calcallpermutation(str, from, to);
+}
+int main()
+{
+	string str = "abc";
+	perm(str);
+	return 0;
+}
+
+
