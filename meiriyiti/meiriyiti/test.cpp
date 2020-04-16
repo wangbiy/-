@@ -666,10 +666,86 @@ void perm(string& str)
 	int to = str.size() - 1;
 	calcallpermutation(str, from, to);
 }
+//整数转罗马数字
+string intToRoman(int num)
+{
+	char* arr[4][10] = {
+		{ "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" },
+		{ "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" },
+		{ "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" },
+		{ "", "M", "MM", "MMM" }
+	};//先将所有的枚举，然后通过整数来计算它的个位、十位、百位以及千位，它与这个数组中的位置对应
+	string result;
+	result.append(arr[3][num / 1000]);
+	result.append(arr[2][num / 100 % 10]);
+	result.append(arr[1][num / 10 % 10]);
+	result.append(arr[0][num % 10]);
+	return result;
+}
+//罗马数字转整数
+int help(char ch)//先将字符串换中单个罗马数字转为整数
+{
+	int result;
+	switch (ch)
+	{
+	case 'I':
+		result = 1;
+		break;
+	case 'V':
+		result = 5;
+		break;
+	case 'X':
+		result = 10;
+		break;
+	case 'L':
+		result = 50;
+		break;
+	case 'C':
+		result = 100;
+		break;
+	case 'D':
+		result = 500;
+		break;
+	case 'M':
+		result = 1000;
+		break;
+	default:
+		result = 0;
+		break;
+	}
+	return result;
+}
+int romanToInt(string s)
+{
+	int n = 0;
+	int len = s.size();
+	for (int i = 0; i < len; ++i)
+	{
+		if (i < len)
+		{
+			int j = i + 1;
+			if (help(s[i]) < help(s[j]))//存在类似于IV这样的形式
+			{
+				n += (help(s[j]) - help(s[i]));
+				i++;
+			}
+			else//不是IV这样的形式，直接加当前罗马数字即可
+				n += help(s[i]);
+		}
+		else//说明到了字符串末尾，不存在特殊形式
+			n += help(s[i]);
+	}
+	return n;
+}
 int main()
 {
 	string str = "abc";
 	perm(str);
+	string result = intToRoman(122);
+	cout << result << endl;
+
+	int ret = romanToInt("LVIII");
+	cout << ret << endl;
 	return 0;
 }
 
