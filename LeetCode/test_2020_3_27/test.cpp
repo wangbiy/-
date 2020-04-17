@@ -263,6 +263,83 @@ int maxArea(vector<int>& height)
 	}
 	return max;
 }
+#if 0
+//给定二叉树的所有左叶子结点之和
+int sum(TreeNode* root)
+{
+	if (root == nullptr)
+		return 0;
+	//先去当前结点的左节点看,若它的左节点是叶子结点，加上，然后也要加上去当前结点的右节点去看
+	if (root->left != nullptr && root->left->left == nullptr && root->left->right == nullptr)
+		return root->left->val + sum(root->right);
+	//否则要去左子树和右子树中去看
+	return sum(root->left) + sum(root->right);
+}
+#endif
+#if 0
+//路径总和
+//给定一个二叉树，它的每个结点都存放着一个整数值。
+//找出路径和等于给定数值的路径总数。
+//路径不需要从根节点开始，也不需要在叶子节点结束，
+//但是路径方向必须是向下的（只能从父节点到子节点）
+//给一个从当前结点开始计算路径树的函数
+int help(TreeNode* root, int sum)
+{
+	if (root == nullptr)
+		return 0;
+	sum -= root->val;
+	return (sum == 0 ? 1 : 0) + help(root->left, sum) + help(root->right, sum);
+}
+//然后根结点调用help函数，然后递归根结点的左子树和右子树即可，因为题目要求可以从任何结点开始计算路径数
+int pathSum(TreeNode* root, int sum)
+{
+	if (root == nullptr)
+		return 0;
+	return help(root, sum) + pathSum(root->left, sum) + path(root->right, sum);
+}
+#endif
+#if 0
+//寻找二叉搜索树中的众数
+//首先进行中序遍历，将中序遍历的每一个元素及其出现的次数存放在map中
+//然后遍历map，如果次数大于max,max就等于这个次数，这样就找到了哪个元素出现次数最多的次数
+//然后再遍历map只要哪个元素的次数等于max，就将这个元素放进结果数组中
+class Solution
+{
+private:
+	map<int, int> m;
+	map<int, int>::iterator it;
+	void inorder(TreeNode* root)
+	{
+		if (root == nullptr)
+			return;
+		inorder(root->left);
+		m[root->val]++;
+		inorder(root->right);
+	}
+public:
+	vector<int> findMode(TreeNode* root)
+	{
+		vector<int> result;
+		if (root == nullptr)
+			return result;
+		int maxValue = 0;
+		inorder(root);
+		for (it = m.begin(); it != m.end(); ++it)
+		{
+			if (it->second < maxValue)
+			{
+				maxValue = it->second;
+			}
+		}
+		for (it = m.begin(); it != m.end(); ++it)
+		{
+			if (it->second == maxValue)
+				result.push_back(it->first);
+		}
+		return result;
+	}
+};
+#endif
 int main()
 {
 	vector<int> nums{ 2, 3, 1, 4, 5 };
