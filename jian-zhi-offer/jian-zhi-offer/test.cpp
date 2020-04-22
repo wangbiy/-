@@ -596,6 +596,29 @@ int NumberOf1Between1AndN_Solution(int n)
 	}
 	return count;
 }
+//计算一个字符串的空格数并且删除
+#include <assert.h>
+int delSpace(char *pStr)
+{
+	assert(pStr);
+	char* tmp = pStr;
+	int count = 0;
+	while (*tmp != '\0')
+	{
+		while (*tmp == ' ')
+		{
+			count++;
+			tmp++;
+		}
+		//记录一下当前位置
+		if (*tmp == '\0')//如果已经到达末尾
+		{
+			return count;
+		}
+		tmp++;
+	}
+	return count;
+}
 int main()
 {
 	S s;
@@ -616,5 +639,9 @@ int main()
 
 	int count = NumberOf1Between1AndN_Solution(12013);
 	cout << count << endl;
+
+	char* str = "a b c f  g";
+	count=delSpace(str);
+	cout << "空格个数为：" << count << endl;
 	return 0;
 }
