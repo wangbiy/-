@@ -737,6 +737,100 @@ int romanToInt(string s)
 	}
 	return n;
 }
+//构造回文(腾讯2017暑假实习生笔试题）
+//给定一个字符串s，你可以从中删除一些字符，
+//使得剩下的串是一个回文串。如何删除才能使得回文串最长呢？
+//输出需要删除的字符个数
+//这里先拷贝构造字符串s，得到s0，然后将s0逆转，求两者的最长公共子序列的长度，最后用字符串长度减去它即可
+#include <string>
+#include <vector>
+#include <algorithm>
+int max(int a, int b)
+{
+	return a > b ? a : b;
+}
+int Delete(string s)
+{
+	string s0(s);
+	reverse(s0.begin(), s0.end());
+	int len = s.size();
+	vector<vector<int>> tmp(len + 1, vector<int>(len + 1));
+	for (int i = 0; i < len; ++i)
+	{
+		for (int j = 0; j < len; ++j)
+		{
+			if (s0[i] == s[j])
+				tmp[i + 1][j + 1] = tmp[i][j] + 1;
+			else
+				tmp[i + 1][j + 1] = max(tmp[i + 1][j], tmp[i][j + 1]);
+		}
+	}
+	return len - tmp[len][len];
+}
+//把一个字符串的大写字母放到字符串的后面，
+//各个字符的相对位置不变，且不能申请额外的空间(腾讯笔试题）
+string func(string& s)
+{
+	for (int i = 0; i < s.size(); ++i)//一共迭代size次
+	{
+		for (int j = 0; j < s.size() - 1; ++j)
+		{
+			if (s[j] <= 'A' && s[j] >= 'Z' && s[j + 1] <= 'a' && s[j + 1] >= 'z')//如果当前是大写下一个是小写，交换即可
+			{
+				char t = s[j];
+				s[j] = s[j + 1];
+				s[j + 1] = t;
+			}
+		}
+	}
+	return s;
+}
+//有n个数，两两组成二元组，相差最小的有多少对呢？相差最大呢？(腾讯笔试题）
+void subtwo(vector<int>& arr,int n)
+{
+	//先进行排序
+	sort(arr.begin(), arr.end());
+	//如果有重复的，找重复的最小值的个数
+	int m1 = 0;//这个用来从头遍历直到没有重复的，也就是求最小值重复的个数
+	int m2 = n - 1;//这个用来从后往前遍历直到没有重复的，也就是求最大值重复的个数
+	int min = 1;//求最小值的个数
+	int max = 1;//求最大值的个数
+	while (arr[m1] == arr[m1 + 1])//重复
+	{
+		min++;
+		m1++;
+	}
+	while (arr[m2] == arr[m2 - 1])
+	{
+		max++;
+		m2--;
+	}
+	//则相差最大的就是最小值的个数*最大值的个数
+	int maxNum = min*max;
+	//接下来找相差最小的
+	int minTemp = arr[n - 1]-arr[0];//假设开始最小的是最后一个元素减去第一个元素
+	int minNum = 0;
+	for (int i = 0; i < n - 1; ++i)
+	{
+		if (arr[i + 1] - arr[i] < minNum)
+			minTemp = arr[i + 1] - arr[i];
+	}
+	//找到相差最小的，看是否大于0，如果大于，说明相差最小的是重复的两个数相减的，因为重复的相减为0，只要知道有几个重复的，就有几对
+	if (minTemp>0)
+		minNum = min;
+	else
+	{
+		for (int i = 0; i < n - 1 - 1; ++i)
+		{
+			for (int j = i+1; j < n - 1; ++j)
+			{
+				if (arr[i] == arr[j])
+					minNum++;
+			}
+		}
+	}
+	cout << minNum << " "<<maxNum << endl;
+}
 int main()
 {
 	string str = "abc";
@@ -746,6 +840,18 @@ int main()
 
 	int ret = romanToInt("LVIII");
 	cout << ret << endl;
+
+	string s = "abcda";
+	ret = Delete(s);
+	cout << "最少要删除" << ret << "个字符" << endl;
+
+	s = "AkleBiCeiLD";
+	result=func(s);
+	cout << result << endl;
+
+	vector<int> arr{ 3, 2, 1, 1, 4, 1, 5, 5, 6, 4, 6 };
+	int size = arr.size();
+	subtwo(arr, size);
 	return 0;
 }
 
