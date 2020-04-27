@@ -785,52 +785,7 @@ string func(string& s)
 	}
 	return s;
 }
-//有n个数，两两组成二元组，相差最小的有多少对呢？相差最大呢？(腾讯笔试题）
-void subtwo(vector<int>& arr,int n)
-{
-	//先进行排序
-	sort(arr.begin(), arr.end());
-	//如果有重复的，找重复的最小值的个数
-	int m1 = 0;//这个用来从头遍历直到没有重复的，也就是求最小值重复的个数
-	int m2 = n - 1;//这个用来从后往前遍历直到没有重复的，也就是求最大值重复的个数
-	int min = 1;//求最小值的个数
-	int max = 1;//求最大值的个数
-	while (arr[m1] == arr[m1 + 1])//重复
-	{
-		min++;
-		m1++;
-	}
-	while (arr[m2] == arr[m2 - 1])
-	{
-		max++;
-		m2--;
-	}
-	//则相差最大的就是最小值的个数*最大值的个数
-	int maxNum = min*max;
-	//接下来找相差最小的
-	int minTemp = arr[n - 1]-arr[0];//假设开始最小的是最后一个元素减去第一个元素
-	int minNum = 0;
-	for (int i = 0; i < n - 1; ++i)
-	{
-		if (arr[i + 1] - arr[i] < minNum)
-			minTemp = arr[i + 1] - arr[i];
-	}
-	//找到相差最小的，看是否大于0，如果大于，说明相差最小的是重复的两个数相减的，因为重复的相减为0，只要知道有几个重复的，就有几对
-	if (minTemp>0)
-		minNum = min;
-	else
-	{
-		for (int i = 0; i < n - 1 - 1; ++i)
-		{
-			for (int j = i+1; j < n - 1; ++j)
-			{
-				if (arr[i] == arr[j])
-					minNum++;
-			}
-		}
-	}
-	cout << minNum << " "<<maxNum << endl;
-}
+
 int main()
 {
 	string str = "abc";
@@ -848,10 +803,6 @@ int main()
 	s = "AkleBiCeiLD";
 	result=func(s);
 	cout << result << endl;
-
-	vector<int> arr{ 3, 2, 1, 1, 4, 1, 5, 5, 6, 4, 6 };
-	int size = arr.size();
-	subtwo(arr, size);
 	return 0;
 }
 
